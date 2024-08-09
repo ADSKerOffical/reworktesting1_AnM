@@ -1,0 +1,185 @@
+local tool = Instance.new("Tool", game.Players.LocalPlayer.Backpack)
+tool.Name = "Black spike"
+tool.RequiresHandle = false
+
+local lastPressTime = 0
+tool.Activated:Connect(function()
+    local currentTime = tick()
+    if currentTime - lastPressTime >= 0.5 then
+        lastPressTime = currentTime
+
+        local player = game.Players.LocalPlayer
+        local character = player.Character or player.CharacterAdded:Wait()
+        local humanoid = character:WaitForChild("Humanoid")
+
+        local Anim = Instance.new("Animation")
+        Anim.AnimationId = "rbxassetid://186934753"
+        local k = game:GetService("Players").LocalPlayer.Character.Humanoid:LoadAnimation(Anim)
+        k:Play()
+        k:AdjustSpeed(1.5)
+
+        local shootDirection = character.PrimaryPart.CFrame.LookVector
+        local assetId = tonumber(8979024870)
+  if not assetId then
+   warn("Invalid asset ID")
+   return
+  end
+local user = game.Players.LocalPlayer
+
+  local projectile = game:GetObjects("rbxassetid://" .. assetId)[1]
+projectile.Size = Vector3.new(3.5,7.5,3.5)
+projectile.Anchored = false
+projectile.Color = Color3.fromRGB(0,0,0)
+        projectile.Name = "BlackShip"
+        projectile.CanCollide = true
+        projectile.Parent = workspace
+
+        projectile.CFrame = character.PrimaryPart.CFrame * CFrame.new(0, 0, -4)
+        projectile.CFrame = projectile.CFrame * CFrame.Angles(math.rad(-90), 0, 0)
+        projectile.Velocity = shootDirection * 300
+
+        game:GetService("Debris"):AddItem(projectile, 10)
+
+        local function onTouch(hit)
+            if hit.Parent:FindFirstChild("Humanoid") and hit.Parent ~= game.Players.LocalPlayer.Character then
+                local humanoid = hit.Parent.Humanoid
+
+                if humanoid.Health == 0 then
+                    humanoid.RootPart.Velocity = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.LookVector * 200
+                    projectile.Velocity = shootDirection * -25
+                    local Spooky = Instance.new("Sound", humanoid.RootPart)
+                    Spooky.Name = "Blood"
+                    Spooky.SoundId = "rbxassetid://3739364168"
+                    Spooky.Volume = 1
+                    Spooky.PlaybackSpeed = 1
+                    Spooky.Looped = false
+                    Spooky:Play()
+                    local part = Instance.new("Part")
+                    part.Name = "BloodEffect"
+                    part.Size = Vector3.new(1, 1, 1)
+                    part.Color = Color3.fromRGB(255,0,0)
+                    part.Transparency = 0
+                    part.Anchored = false
+                    part.Shape = Enum.PartType.Ball
+                    part.Position = humanoid.RootPart.Position
+                    part.Parent = workspace
+                    game:GetService("Debris"):AddItem(part, 4)
+                    for _, part in pairs(hit.Parent:GetDescendants()) do
+                        if part:IsA("BasePart") then
+                            part.Color = Color3.new(0, 0, 0)
+                        end
+                    end
+                    for _, accessory in pairs(hit.Parent:GetChildren()) do
+                        if accessory:IsA("Accessory") then
+                            accessory:Destroy()
+                        end
+                    end
+                end
+
+                if humanoid.Health ~= 0 then
+                    local args = {
+                        [1] = hit.Parent.Humanoid.RootPart.CFrame,
+                        [2] = hit.Parent.Humanoid.MaxHealth
+                    }
+                    game.Players.LocalPlayer.Backpack["Mini Uzumaki"].FireServer.RemoteEvent:FireServer(unpack(args))
+                end
+            end
+        end
+
+        projectile.Touched:Connect(onTouch)
+    end
+end)
+
+local tool = Instance.new("Tool")
+tool.Name = "Spike Road"
+tool.RequiresHandle = false
+
+local lastPressTime = 0
+tool.Activated:Connect(function()
+    local currentTime = tick()
+    if currentTime - lastPressTime >= 4 then
+        lastPressTime = currentTime
+        local player = game.Players.LocalPlayer
+        local char = player.Character or player.CharacterAdded:Wait()
+        local humanoidRootPart = char:WaitForChild("HumanoidRootPart")
+        local playerForward = humanoidRootPart.CFrame.LookVector
+
+        local Anim = Instance.new("Animation")
+        Anim.AnimationId = "rbxassetid://111898867"
+        local k = game:GetService("Players").LocalPlayer.Character.Humanoid:LoadAnimation(Anim)
+        k:Play()
+        k:AdjustSpeed(2.5)
+        task.wait(0.45)
+
+        local numUzumaki = 20
+        local spacing = 4
+        local travelDistance = 12
+
+        local TweenService = game:GetService("TweenService")
+
+        local function createSpikes()
+            for i = 1, numUzumaki do
+                local sg = math.random(8, 20)
+                 local ji = 3.5 + sg / 12
+                local assetId = tonumber(8979024870)
+  if not assetId then
+   warn("Invalid asset ID")
+   return
+  end
+
+  local spike = game:GetObjects("rbxassetid://" .. assetId)[1]
+spike.Size = Vector3.new(ji,sg,ji)
+spike.Anchored = true
+spike.Color = Color3.fromRGB(0,0,0)
+        spike.Name = "BlackShip"
+                spike.Orientation = Vector3.new(math.random(-25,25), 0, math.random(-15,15))
+                spike.CanCollide = true
+                spike.Material = Enum.Material.Concrete
+                spike.Parent = workspace
+                
+                spike.Position = humanoidRootPart.Position + (i * spacing * playerForward) + Vector3.new(0, -travelDistance, 0)
+
+                local Spooky = Instance.new("Sound", spike)
+                Spooky.Name = "Spike Wall"
+                Spooky.SoundId = "rbxassetid://236382703"
+                Spooky.Volume = 1
+                Spooky.PlaybackSpeed = 1
+                Spooky.Looped = false
+                Spooky:Play()
+
+                spike.Touched:Connect(function(hit)
+                    if hit.Parent ~= char then
+                        local humanoid = hit.Parent:FindFirstChildOfClass("Humanoid")
+                        if humanoid and humanoid.Health ~= 0 then
+                            local args = {
+                                [1] = humanoid.RootPart.CFrame,
+                                [2] = humanoid.MaxHealth
+                            }
+                            game.Players.LocalPlayer.Backpack["Mini Uzumaki"].FireServer.RemoteEvent:FireServer(unpack(args))
+                        end
+                    end
+                end)
+
+                local tweenInfo = TweenInfo.new(
+                    0.015,
+                    Enum.EasingStyle.Quad,
+                    Enum.EasingDirection.Out,
+                    0,
+                    false,
+                    0
+                )
+
+                local targetPosition = humanoidRootPart.Position + (i * spacing * playerForward)
+                local tween = TweenService:Create(spike, tweenInfo, {Position = targetPosition})
+                tween:Play()
+                tween.Completed:Wait()
+
+                game.Debris:AddItem(spike, 4)
+            end
+        end
+
+        createSpikes()
+    end
+end)
+
+tool.Parent = game.Players.LocalPlayer.Backpack
